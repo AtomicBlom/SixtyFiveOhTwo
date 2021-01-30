@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixtyFiveOhTwo", "SixtyFiveOhTwo\SixtyFiveOhTwo.csproj", "{F9068D0C-C876-42B5-AAEF-6EBD2BA9B7EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SixtyFiveOhTwo.Tests", "SixtyFiveOhTwo.Tests\SixtyFiveOhTwo.Tests.csproj", "{6CC499DE-95BD-4BD0-8846-5097941A2218}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9068D0C-C876-42B5-AAEF-6EBD2BA9B7EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9068D0C-C876-42B5-AAEF-6EBD2BA9B7EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9068D0C-C876-42B5-AAEF-6EBD2BA9B7EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9068D0C-C876-42B5-AAEF-6EBD2BA9B7EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CC499DE-95BD-4BD0-8846-5097941A2218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CC499DE-95BD-4BD0-8846-5097941A2218}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CC499DE-95BD-4BD0-8846-5097941A2218}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CC499DE-95BD-4BD0-8846-5097941A2218}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {57FA4071-3A97-4775-8679-6BF5A993B900}
+	EndGlobalSection
+EndGlobal
