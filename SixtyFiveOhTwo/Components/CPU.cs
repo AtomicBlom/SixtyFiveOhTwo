@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using SixtyFiveOhTwo.Instructions;
-using SixtyFiveOhTwo.Instructions.Definitions;
 
 namespace SixtyFiveOhTwo.Components
 {
@@ -9,6 +8,7 @@ namespace SixtyFiveOhTwo.Components
         public const ushort ResetVectorAddressLow = 0xFFFC;
         public const ushort ResetVectorAddressHigh = 0xFFFD;
         public const ushort StackStart = 0x0100;
+        public const ushort StackEnd = 0x01FF;
         public const ushort ZeroPageStart = 0x0000;
 
         private readonly IInstruction[] _instructions;
@@ -56,7 +56,7 @@ namespace SixtyFiveOhTwo.Components
             _logger.WriteLine(string.Empty);
             _logger.WriteLine("Last known processor state:");
             _logger.WriteLine($"    PC:     {_state.ProgramCounter:X4}");
-            _logger.WriteLine($"    SP:     {_state.StackPointer:X4}");
+            _logger.WriteLine($"    SP:     {_state.StackPointer:X2}");
             _logger.WriteLine($"    A:      {_state.Accumulator:X2} ({_state.Accumulator})");
             _logger.WriteLine($"    X:      {_state.IndexRegisterX:X2} ({_state.IndexRegisterX})");
             _logger.WriteLine($"    Y:      {_state.IndexRegisterY:X2} ({_state.IndexRegisterY})");
@@ -88,7 +88,7 @@ namespace SixtyFiveOhTwo.Components
 
         public void PushStack(byte value)
         {
-            _bus.WriteValue((ushort)(0x0100 & State.StackPointer), value);
+            _bus.WriteValue((ushort)(0x0100 | State.StackPointer), value);
             unchecked
             {
                 State.StackPointer--;
@@ -102,7 +102,7 @@ namespace SixtyFiveOhTwo.Components
             {
                 State.StackPointer++;
             }
-            var value = _bus.ReadByte((ushort)(0x0100 & State.StackPointer));
+            var value = _bus.ReadByte((ushort)(0x0100 | State.StackPointer));
             return value;
         }
     }

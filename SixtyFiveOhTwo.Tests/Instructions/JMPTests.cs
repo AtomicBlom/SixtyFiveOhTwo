@@ -28,9 +28,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 1);
+
             State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -45,9 +48,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //5 to JMP, 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(5 + 1);
+
             State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Indirect, 
+                    TCnt.GracefulExit));
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using NSubstitute;
@@ -66,7 +65,9 @@ namespace SixtyFiveOhTwo.Tests
             cpu.State.Status.Should().HaveFlag(ProcessorStatus.InterruptDisable);
         }
 
-        //[Fact]
+
+#if COMPLETION_REPORT
+        [Fact]
         public void CPU_ImplementsAll6502Instructions()
         {
             var instructions = new InstructionSet().Instructions;
@@ -75,7 +76,7 @@ namespace SixtyFiveOhTwo.Tests
             implementedInstructions.Should().HaveCount(56);
         }
 
-        //[Fact]
+        [Fact]
         public void CPU_ImplementsAll6502OpCodes()
         {
             var instructions = new InstructionSet().Instructions;
@@ -83,5 +84,6 @@ namespace SixtyFiveOhTwo.Tests
             var implementedOpCodes = instructions.Where(i => i is not null).ToList();
             implementedOpCodes.Should().HaveCount(151);
         }
+#endif
     }
 }

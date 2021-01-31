@@ -29,12 +29,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //6 to JMP, 3 to LDA(ZP), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 3 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            
             State.Accumulator.Should().Be(0x55);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_ZeroPage, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -50,12 +55,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 3 to LDA(ZP), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 3 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+
             State.Accumulator.Should().Be(0xF5);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
+            
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_ZeroPage, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -71,12 +81,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 3 to LDA(ZP), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 3 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+
             State.Accumulator.Should().Be(0x00);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_ZeroPage, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -90,12 +105,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDA(Immediate), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+
             State.Accumulator.Should().Be(0x55);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_Immediate, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -109,12 +129,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDA(Immediate), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            
             State.Accumulator.Should().Be(0xF5);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
+            
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_Immediate, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -128,12 +153,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDA(Immediate), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            
             State.Accumulator.Should().Be(0x00);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_Immediate, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -150,12 +180,18 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 2 to LDA(ZP,X), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            
             State.Accumulator.Should().Be(0x66);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_ZeroPageX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -172,12 +208,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(ZP,X), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            
             State.Accumulator.Should().Be(0xF6);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_ZeroPageX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -194,12 +237,18 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(ZP,X), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+
             State.Accumulator.Should().Be(0x00);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_ZeroPageX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -215,12 +264,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
+            
             State.Accumulator.Should().Be(0x55);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_Absolute, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -236,33 +290,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
+            
             State.Accumulator.Should().Be(0xF5);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
-        }
 
-        [Fact]
-        public void LDA_Absolute_WithZeroValue_ShouldSetAccumulatorAndStatus()
-        {
-            ushort dataStart = 0xAAA5;
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadAAbsoluteInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(dataStart, 0x00)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-            //3 to JMP, 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 4 + 1);
             State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
-            State.Accumulator.Should().Be(0x00);
-            State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_Absolute, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -279,13 +317,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            
             State.Accumulator.Should().Be(0x66);
             State.IndexRegisterX.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_AbsoluteX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -302,13 +346,45 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+
             State.Accumulator.Should().Be(0xF6);
             State.IndexRegisterX.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute,
+                    TCnt.LDX_Immediate,
+                    TCnt.LDA_AbsoluteX,
+                    TCnt.GracefulExit));
+        }
+
+        [Fact]
+        public void LDA_Absolute_WithZeroValue_ShouldSetAccumulatorAndStatus()
+        {
+            ushort dataStart = 0xAAA5;
+            ProgramBuilder.Start(Logger)
+                .ScrambleData(seed: ScrambleSeed)
+                .JMP(ProgramStartAddress, true)
+                .AddInstruction(new LoadAAbsoluteInstruction().Write(dataStart))
+                .AddInstruction(GracefulExitInstruction.Write())
+                .SetData(dataStart, 0x00)
+                .Write(MemoryBytes);
+
+            Cpu.Run();
+            
+            State.Accumulator.Should().Be(0x00);
+            State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
+            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDA_Absolute, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -325,13 +401,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            
             State.Accumulator.Should().Be(0x00);
             State.IndexRegisterX.Should().Be(0x01);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_AbsoluteX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -348,10 +430,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4+1 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 5 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+
             State.Accumulator.Should().Be(0x66);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_AbsoluteX, 
+                    TCnt.PageBoundaryPenalty, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -368,13 +457,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+
             State.Accumulator.Should().Be(0x66);
             State.IndexRegisterY.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_AbsoluteY, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -391,13 +486,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            
             State.Accumulator.Should().Be(0xF6);
             State.IndexRegisterY.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_AbsoluteY, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -414,13 +515,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 4 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+
             State.Accumulator.Should().Be(0x00);
             State.IndexRegisterY.Should().Be(0x01);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_AbsoluteY, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -437,10 +544,17 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 5 to LDA(Abs) with cross boundary access, 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 5 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+
             State.Accumulator.Should().Be(0x66);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_AbsoluteY, 
+                    TCnt.PageBoundaryPenalty, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -459,13 +573,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm),  4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 6 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            
             State.Accumulator.Should().Be(0x55);
             State.IndexRegisterX.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_IndirectX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -484,13 +604,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm),  4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 6 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            
             State.Accumulator.Should().Be(0xF5);
             State.IndexRegisterX.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_IndirectX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -509,13 +635,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm),  4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 6 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            
             State.Accumulator.Should().Be(0x00);
             State.IndexRegisterX.Should().Be(0x01);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_IndirectX, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -534,13 +666,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm),  4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 5 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            
             State.Accumulator.Should().Be(0x66);
             State.IndexRegisterY.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_IndirectY, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -559,13 +697,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm),  4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 5 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+
             State.Accumulator.Should().Be(0xF6);
             State.IndexRegisterY.Should().Be(0x01);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_IndirectY, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -584,13 +728,19 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm),  4 to LDA(Abs), 1 to Graceful Exit.
-            Clock.Ticks.Should().Be(3 + 2 + 5 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+
             State.Accumulator.Should().Be(0x00);
             State.IndexRegisterY.Should().Be(0x01);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_IndirectY, 
+                    TCnt.GracefulExit));
         }
 
         [Fact]
@@ -609,13 +759,20 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .Write(MemoryBytes);
 
             Cpu.Run();
-            //3 to JMP, 2 to LDX(imm), 5 to LDA(IndirectY), 1 to Graceful Exit, +1 page boundary penalty.
-            Clock.Ticks.Should().Be(3 + 2 + 5 + 1 + 1);
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+
             State.Accumulator.Should().Be(0x00);
             State.IndexRegisterY.Should().Be(0x01);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
+
+            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            Clock.Ticks.Should().Be(
+                Timings.For(
+                    TCnt.JMP_Absolute, 
+                    TCnt.LDX_Immediate, 
+                    TCnt.LDA_IndirectY, 
+                    TCnt.PageBoundaryPenalty, 
+                    TCnt.GracefulExit));
         }
     }
 }

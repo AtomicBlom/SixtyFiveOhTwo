@@ -1,5 +1,4 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Emit;
 using SixtyFiveOhTwo.Instructions.Encoding;
 using SixtyFiveOhTwo.Util;
 
@@ -20,12 +19,13 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.JSR
         public void Execute(CPU cpu)
         {
             ref var cpuState = ref cpu.State;
-            var t = (ushort)(cpuState.ProgramCounter - 1);
+            var t = cpuState.ProgramCounter.Offset(-1);
             
             cpu.PushStack(t.HighOrderByte());
             cpu.PushStack(t.LowOrderByte());
 
             cpuState.ProgramCounter = cpu.ReadProgramCounterWord();
+            cpu.Bus.Clock.Wait(); //Needs an extra wait in here somewhere
         }
 
         public IInstructionEncoder Write(ushort value)

@@ -1,4 +1,5 @@
 ﻿using SixtyFiveOhTwo.Components;
+using SixtyFiveOhTwo.Instructions.Encoding;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.NOP
 {
@@ -10,6 +11,11 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.NOP
         public void Execute(CPU cpu)
         {
             cpu.Bus.Clock.Wait();
+        }
+
+        public IInstructionEncoder Write()
+        {
+            return new ImpliedAddressInstructionEncoder(this);
         }
     }
 }

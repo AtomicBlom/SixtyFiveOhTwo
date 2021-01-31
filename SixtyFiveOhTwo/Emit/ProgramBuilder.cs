@@ -2,6 +2,8 @@
 using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions;
 using SixtyFiveOhTwo.Instructions.Definitions.JSR;
+using SixtyFiveOhTwo.Instructions.Definitions.LDX;
+using SixtyFiveOhTwo.Instructions.Definitions.LDY;
 
 namespace SixtyFiveOhTwo.Emit
 {
@@ -92,6 +94,18 @@ namespace SixtyFiveOhTwo.Emit
             
             var end = Math.Min(dataStart + length, 0xFFFF);
             random.NextBytes(_memory.AsSpan(dataStart, end - dataStart));
+            return this;
+        }
+
+        public ProgramBuilder SetXRegister(byte value)
+        {
+            AddInstruction(new LoadXImmediateInstruction().Write(value));
+            return this;
+        }
+
+        public ProgramBuilder SetYRegister(byte value)
+        {
+            AddInstruction(new LoadYImmediateInstruction().Write(value));
             return this;
         }
     }
