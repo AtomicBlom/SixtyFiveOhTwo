@@ -1,5 +1,6 @@
 ﻿using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions.Encoding;
+using static SixtyFiveOhTwo.Util.UShortExtensions;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
@@ -13,9 +14,10 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
             ref var cpuState = ref cpu.State;
 
             var zeroPageOffset = cpu.ReadProgramCounterByte();
-            var lsb = cpu.Bus.ReadByte((ushort) ((zeroPageOffset + cpuState.IndexRegisterX) & 0xFF));
-            var msb = cpu.Bus.ReadByte((ushort) ((zeroPageOffset + cpuState.IndexRegisterX + 1) & 0xFF)) << 8;
-            var address = (ushort)(msb | lsb);
+            var lsb = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset, cpuState.IndexRegisterX));
+            var msb = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset, cpuState.IndexRegisterX, 1));
+            var address = MakeUShort(msb, lsb);
+
             cpu.Bus.Clock.Wait(); //FIXME: Not sure where the extra wait comes from?
             cpuState.Accumulator = cpu.Bus.ReadByte(address);
 

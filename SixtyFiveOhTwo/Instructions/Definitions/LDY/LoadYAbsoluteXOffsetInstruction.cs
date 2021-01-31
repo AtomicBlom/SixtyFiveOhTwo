@@ -1,6 +1,7 @@
 ﻿using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions.Encoding;
 using SixtyFiveOhTwo.Util;
+using static SixtyFiveOhTwo.Util.UShortExtensions;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDY
 {
@@ -16,13 +17,13 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDY
         {
             ref var cpuState = ref cpu.State;
 
-            var zeroPageOffset = cpu.ReadProgramCounterWord();
-            var address = (ushort)((zeroPageOffset + cpuState.IndexRegisterX) & 0xFFFF);
+            var absoluteAddress = cpu.ReadProgramCounterWord();
+            var address = absoluteAddress.Offset(cpuState.IndexRegisterX);
 
-            var firstFetchAddress = (ushort)(zeroPageOffset.HighOrderByte() << 8 | address.LowOrderByte());
+            var firstFetchAddress = MakeUShort(absoluteAddress.HighOrderByte(), address.LowOrderByte());
             var value = cpu.Bus.ReadByte(firstFetchAddress);
 
-            if (zeroPageOffset.HighOrderByte() != address.HighOrderByte())
+            if (absoluteAddress.HighOrderByte() != address.HighOrderByte())
             {
                 value = cpu.Bus.ReadByte(address);
             }

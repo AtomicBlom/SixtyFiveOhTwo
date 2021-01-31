@@ -4,13 +4,6 @@ using SixtyFiveOhTwo.Util;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.JSR
 {
-    //Logic:
-    //t = PC - 1
-    //bPoke(SP, t.h)
-    //SP = SP - 1
-    //bPoke(SP, t.l)
-    //SP = SP - 1
-    //PC = $A5B6
     public sealed class JumpToSubroutineInstruction : IInstruction
     {
         public byte OpCode => 0x20;

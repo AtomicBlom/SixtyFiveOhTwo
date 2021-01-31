@@ -20,10 +20,6 @@ namespace SixtyFiveOhTwo.Instructions
 
             foreach (var instruction in instructions)
             {
-                if (Instructions[instruction.OpCode] != null)
-                {
-                    throw new Exception($"Opcode {instruction.OpCode} collides between {instruction.GetType().Name} and {Instructions[instruction.OpCode].GetType().Name}");
-                }
                 Instructions[instruction.OpCode] = instruction;
             }
         }

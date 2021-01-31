@@ -1,6 +1,7 @@
 ﻿using System;
 using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions;
+using SixtyFiveOhTwo.Instructions.Definitions.JMP;
 using SixtyFiveOhTwo.Instructions.Definitions.JSR;
 using SixtyFiveOhTwo.Instructions.Definitions.LDX;
 using SixtyFiveOhTwo.Instructions.Definitions.LDY;

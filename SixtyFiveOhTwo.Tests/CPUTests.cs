@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using NSubstitute;
@@ -63,6 +65,29 @@ namespace SixtyFiveOhTwo.Tests
             cpu.Reset();
             cpu.State.ProgramCounter.Should().Be(CPU.ResetVectorAddressLow);
             cpu.State.Status.Should().HaveFlag(ProcessorStatus.InterruptDisable);
+        }
+
+        [Fact]
+        public void CPU_NoInstructionsHaveCollidingOpCodes()
+        {
+            var instructions =
+                typeof(InstructionSet)
+                    .Assembly
+                    .DefinedTypes
+                    .Where(t => t.IsClass && !t.IsAbstract)
+                    .Where(t => t.IsAssignableTo(typeof(IInstruction)))
+                    .Select(Activator.CreateInstance)
+                    .Cast<IInstruction>();
+
+            var seenInstructions = new IInstruction[byte.MaxValue + 1];
+            foreach (var instruction in instructions)
+            {
+                if (seenInstructions[instruction.OpCode] != null)
+                {
+                    throw new Exception($"Opcode {instruction.OpCode} collides between {instruction.GetType().Name} and {seenInstructions[instruction.OpCode].GetType().Name}");
+                }
+                seenInstructions[instruction.OpCode] = instruction;
+            }
         }
 
 

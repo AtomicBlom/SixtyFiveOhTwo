@@ -1,5 +1,6 @@
 ﻿using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions.Encoding;
+using static SixtyFiveOhTwo.Util.UShortExtensions;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
@@ -18,7 +19,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 
             var zeroPageOffset = cpu.ReadProgramCounterByte();
             cpu.Bus.Clock.Wait(); //One cycle for the adder to calculate
-            var address = (ushort)((zeroPageOffset + cpuState.IndexRegisterX) & 0xFF);
+            var address = ZeroPageAddress(zeroPageOffset, cpuState.IndexRegisterX);
             cpuState.Accumulator = cpu.Bus.ReadByte(address);
 
             cpuState.Status = cpuState.Status.SetFromRegister(cpuState.Accumulator);

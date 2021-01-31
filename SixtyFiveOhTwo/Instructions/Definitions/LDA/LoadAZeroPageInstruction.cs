@@ -1,5 +1,6 @@
 ﻿using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions.Encoding;
+using static SixtyFiveOhTwo.Util.UShortExtensions;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
@@ -15,9 +16,8 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
         public void Execute(CPU cpu)
         {
             ref var cpuState = ref cpu.State;
-
-            var address = (ushort)(0x0000 | (cpu.ReadProgramCounterByte() & 0xFF));
-            cpuState.Accumulator = cpu.Bus.ReadByte(address);
+            var address = cpu.ReadProgramCounterByte();
+            cpuState.Accumulator = cpu.Bus.ReadByte(ZeroPageAddress(address));
 
             cpuState.Status = cpuState.Status.SetFromRegister(cpuState.Accumulator);
         }

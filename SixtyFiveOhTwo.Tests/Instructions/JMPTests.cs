@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Emit;
-using SixtyFiveOhTwo.Instructions.Definitions.JSR;
+using SixtyFiveOhTwo.Instructions.Definitions.JMP;
 using SixtyFiveOhTwo.Tests.Util;
 using SixtyFiveOhTwo.Util;
 using Xunit;
@@ -29,7 +29,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 
             Cpu.Run();
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute, 
@@ -49,7 +49,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 
             Cpu.Run();
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Indirect, 

@@ -1,12 +1,9 @@
 ﻿using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions.Encoding;
+using static SixtyFiveOhTwo.Util.UShortExtensions;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
 {
-    //Logic:
-    //A = M
-    //P.N = A.7
-    //P.Z = (A == 0) ? 1 : 0
     public sealed class LoadXZeroPageYOffsetInstruction : IInstruction
     {
         public byte OpCode => 0xB6;
@@ -18,7 +15,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
 
             var zeroPageOffset = cpu.ReadProgramCounterByte();
             cpu.Bus.Clock.Wait(); //One cycle for the adder to calculate
-            var address = (ushort)((zeroPageOffset + cpuState.IndexRegisterY) & 0xFF);
+            var address = ZeroPageAddress(zeroPageOffset, cpuState.IndexRegisterY);
             cpuState.IndexRegisterX = cpu.Bus.ReadByte(address);
 
             cpuState.Status = cpuState.Status.SetFromRegister(cpuState.IndexRegisterX);

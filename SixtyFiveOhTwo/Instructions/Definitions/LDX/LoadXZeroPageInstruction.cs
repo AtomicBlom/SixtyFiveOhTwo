@@ -1,5 +1,6 @@
 ﻿using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions.Encoding;
+using static SixtyFiveOhTwo.Util.UShortExtensions;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
 {
@@ -16,8 +17,8 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
         {
             ref var cpuState = ref cpu.State;
 
-            var address = (ushort)(0x0000 | (cpu.ReadProgramCounterByte() & 0xFF));
-            cpuState.IndexRegisterX = cpu.Bus.ReadByte(address);
+            var zeroPageOffset = cpu.ReadProgramCounterByte();
+            cpuState.IndexRegisterX = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset));
 
             cpuState.Status = cpuState.Status.SetFromRegister(cpuState.IndexRegisterX);
         }

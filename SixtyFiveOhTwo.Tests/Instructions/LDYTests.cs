@@ -3,6 +3,7 @@ using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Emit;
 using SixtyFiveOhTwo.Instructions.Definitions.LDY;
 using SixtyFiveOhTwo.Tests.Util;
+using SixtyFiveOhTwo.Util;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -157,7 +158,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute, 
@@ -184,7 +185,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -211,7 +212,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 2 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -237,7 +238,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(3 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -262,7 +263,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(3 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -287,7 +288,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 3 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(3 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -314,7 +315,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -342,7 +343,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -370,7 +371,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
@@ -398,7 +399,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
 
-            State.ProgramCounter.Should().Be((ushort)(ProgramStartAddress + 2 + 3 + 1));
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
             Clock.Ticks.Should().Be(
                 Timings.For(
                     TCnt.JMP_Absolute,
