@@ -17,131 +17,58 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         {
         }
 
-        [Fact]
-        public void LDX_Immediate_WithAPositiveValue_SetsXAndStatusFlags()
+        [Theory]
+        [InlineData(0x7A, false, false)]
+        [InlineData(0xFA, true, false)]
+        [InlineData(0x00, false, true)]
+        public void LDX_Immediate_WithAPositiveValue_SetsXAndStatusFlags(byte value, bool negativeFlag, bool zeroFlag)
         {
             ProgramBuilder.Start(Logger)
                 .ScrambleData(seed: ScrambleSeed)
-                .AddInstruction(new LoadXImmediateInstruction().Write(0x7A))
+                .AddInstruction(new LoadXImmediateInstruction().Write(value))
                 .AddInstruction(GracefulExitInstruction.Write())
                 .Write(MemoryBytes);
 
             Cpu.Run();
 
-            State.IndexRegisterX.Should().Be(0x7A);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
+            State.IndexRegisterX.Should().Be(value);
+            State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
+            State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
             State.ProgramCounter.Should().Be(CPU.ResetVectorAddressLow + 2 + 1);
             Clock.Ticks.Should()
                 .Be(Timings.For(TCnt.LDX_Immediate, TCnt.GracefulExit));
         }
 
-        [Fact]
-        public void LDX_Immediate_WithANegativeValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .AddInstruction(new LoadXImmediateInstruction().Write(0xFA))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0xFA);
-            State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(CPU.ResetVectorAddressLow + 2 + 1);
-            Clock.Ticks.Should()
-                .Be(Timings.For(TCnt.LDX_Immediate, TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_Immediate_WithAZeroValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .AddInstruction(new LoadXImmediateInstruction().Write(0x00))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0x00);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(CPU.ResetVectorAddressLow + 2 + 1);
-            Clock.Ticks.Should()
-                .Be(Timings.For(TCnt.LDX_Immediate, TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_ZeroPage_WithAPositiveValue_SetsXAndStatusFlags()
+        [Theory]
+        [InlineData(0x7A, false, false)]
+        [InlineData(0xFA, true, false)]
+        [InlineData(0x00, false, true)]
+        public void LDX_ZeroPage_WithAPositiveValue_SetsXAndStatusFlags(byte value, bool negativeFlag, bool zeroFlag)
         {
             ProgramBuilder.Start(Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .AddInstruction(new LoadXZeroPageInstruction().Write(0x77))
                 .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(CPU.ZeroPageStart + 0x77, 0x7A)
+                .SetData(CPU.ZeroPageStart + 0x77, value)
                 .Write(MemoryBytes);
 
             Cpu.Run();
 
-            State.IndexRegisterX.Should().Be(0x7A);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
+            State.IndexRegisterX.Should().Be(value);
+            State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
+            State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
             State.ProgramCounter.Should().Be(CPU.ResetVectorAddressLow + 2 + 1);
             Clock.Ticks.Should()
                 .Be(Timings.For(TCnt.LDX_ZeroPage, TCnt.GracefulExit));
         }
 
-        [Fact]
-        public void LDX_ZeroPage_WithANegativeValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .AddInstruction(new LoadXZeroPageInstruction().Write(0x77))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(CPU.ZeroPageStart + 0x77, 0xFA)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0xFA);
-            State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(CPU.ResetVectorAddressLow + 2 + 1);
-            Clock.Ticks.Should()
-                .Be(Timings.For(TCnt.LDX_ZeroPage, TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_ZeroPage_WithAZeroValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .AddInstruction(new LoadXZeroPageInstruction().Write(0x77))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(CPU.ZeroPageStart + 0x77, 0x00)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0x00);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(CPU.ResetVectorAddressLow + 2 + 1);
-            Clock.Ticks.Should()
-                .Be(Timings.For(TCnt.LDX_ZeroPage, TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_ZeroPageYOffset_WithAPositiveValue_SetsXAndStatusFlags()
+        [Theory]
+        [InlineData(0x7A, false, false)]
+        [InlineData(0xFA, true, false)]
+        [InlineData(0x00, false, true)]
+        public void LDX_ZeroPageYOffset_WithAPositiveValue_SetsXAndStatusFlags(byte value, bool negativeFlag, bool zeroFlag)
         {
             ProgramBuilder.Start(Logger)
                 .ScrambleData(seed: ScrambleSeed)
@@ -149,14 +76,14 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .SetYRegister(0x01)
                 .AddInstruction(new LoadXZeroPageYOffsetInstruction().Write(0x77))
                 .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(CPU.ZeroPageStart + 0x77, 0x7A, 0x7E)
+                .SetData(CPU.ZeroPageStart + 0x77, 0x7E, value)
                 .Write(MemoryBytes);
 
             Cpu.Run();
 
-            State.IndexRegisterX.Should().Be(0x7E);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
+            State.IndexRegisterX.Should().Be(value);
+            State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
+            State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
             State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
             Clock.Ticks.Should().Be(
@@ -167,76 +94,25 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                     TCnt.GracefulExit));
         }
 
-        [Fact]
-        public void LDX_ZeroPageYOffset_WithANegativeValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .JMP(ProgramStartAddress, true)
-                .SetYRegister(0x01)
-                .AddInstruction(new LoadXZeroPageYOffsetInstruction().Write(0x77))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(CPU.ZeroPageStart + 0x77, 0x7A, 0xFE)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0xFE);
-            State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute,
-                    TCnt.LDY_Immediate,
-                    TCnt.LDX_ZeroPageY,
-                    TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_ZeroPageYOffset_WithAZeroValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .JMP(ProgramStartAddress, true)
-                .SetYRegister(0x01)
-                .AddInstruction(new LoadXZeroPageYOffsetInstruction().Write(0x77))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(CPU.ZeroPageStart + 0x77, 0x7A, 0x00)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0x00);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute,
-                    TCnt.LDY_Immediate,
-                    TCnt.LDX_ZeroPageY,
-                    TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_Absolute_WithAPositiveValue_SetsXAndStatusFlags()
+        [Theory]
+        [InlineData(0x7A, false, false)]
+        [InlineData(0xFA, true, false)]
+        [InlineData(0x00, false, true)]
+        public void LDX_Absolute_SetsXAndStatusFlags(byte value, bool negativeFlag, bool zeroFlag)
         {
             ProgramBuilder.Start(Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
                 .AddInstruction(new LoadXAbsoluteInstruction().Write(0x77AA))
                 .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(0x77AA, 0x7E)
+                .SetData(0x77AA, value)
                 .Write(MemoryBytes);
 
             Cpu.Run();
 
-            State.IndexRegisterX.Should().Be(0x7E);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
+            State.IndexRegisterX.Should().Be(value);
+            State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
+            State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
             State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(3 + 1));
             Clock.Ticks.Should().Be(
@@ -246,58 +122,11 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                     TCnt.GracefulExit));
         }
 
-        [Fact]
-        public void LDX_Absolute_WithANegativeValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadXAbsoluteInstruction().Write(0x77AA))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(0x77AA, 0xFE)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0xFE);
-            State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute,
-                    TCnt.LDX_Absolute,
-                    TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_Absolute_WithAZeroValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadXAbsoluteInstruction().Write(0x77AA))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(0x77AA, 0x00)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterX.Should().Be(0x00);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute,
-                    TCnt.LDX_Absolute,
-                    TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_AbsoluteY_WithAPositiveValue_SetsXAndStatusFlags()
+        [Theory]
+        [InlineData(0x7A, false, false)]
+        [InlineData(0xFA, true, false)]
+        [InlineData(0x00, false, true)]
+        public void LDX_AbsoluteY_WithAPositiveValue_SetsXAndStatusFlags(byte value, bool negativeFlag, bool zeroFlag)
         {
             ProgramBuilder.Start(Logger)
                 .ScrambleData(seed: ScrambleSeed)
@@ -305,71 +134,15 @@ namespace SixtyFiveOhTwo.Tests.Instructions
                 .SetYRegister(0x01)
                 .AddInstruction(new LoadXAbsoluteYOffsetInstruction().Write(0x77AA))
                 .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(0x77AA, 0x7A, 0x7E)
+                .SetData(0x77AA, 0x7E, value)
                 .Write(MemoryBytes);
 
             Cpu.Run();
 
             State.IndexRegisterY.Should().Be(0x01);
-            State.IndexRegisterX.Should().Be(0x7E);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute,
-                    TCnt.LDY_Immediate,
-                    TCnt.LDX_AbsoluteY,
-                    TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_AbsoluteY_WithANegativeValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .JMP(ProgramStartAddress, true)
-                .SetYRegister(0x01)
-                .AddInstruction(new LoadXAbsoluteYOffsetInstruction().Write(0x77AA))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(0x77AA, 0x7A, 0xFE)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterY.Should().Be(0x01);
-            State.IndexRegisterX.Should().Be(0xFE);
-            State.Status.Should().HaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.ZeroFlag);
-
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute,
-                    TCnt.LDY_Immediate,
-                    TCnt.LDX_AbsoluteY,
-                    TCnt.GracefulExit));
-        }
-
-        [Fact]
-        public void LDX_AbsoluteY_WithAZeroValue_SetsXAndStatusFlags()
-        {
-            ProgramBuilder.Start(Logger)
-                .ScrambleData(seed: ScrambleSeed)
-                .JMP(ProgramStartAddress, true)
-                .SetYRegister(0x01)
-                .AddInstruction(new LoadXAbsoluteYOffsetInstruction().Write(0x77AA))
-                .AddInstruction(GracefulExitInstruction.Write())
-                .SetData(0x77AA, 0x7A, 0x00)
-                .Write(MemoryBytes);
-
-            Cpu.Run();
-
-            State.IndexRegisterY.Should().Be(0x01);
-            State.IndexRegisterX.Should().Be(0x00);
-            State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
-            State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
+            State.IndexRegisterX.Should().Be(value);
+            State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
+            State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
             State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
             Clock.Ticks.Should().Be(

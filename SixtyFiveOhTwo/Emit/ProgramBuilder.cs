@@ -3,6 +3,7 @@ using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions;
 using SixtyFiveOhTwo.Instructions.Definitions.JMP;
 using SixtyFiveOhTwo.Instructions.Definitions.JSR;
+using SixtyFiveOhTwo.Instructions.Definitions.LDA;
 using SixtyFiveOhTwo.Instructions.Definitions.LDX;
 using SixtyFiveOhTwo.Instructions.Definitions.LDY;
 
@@ -107,6 +108,12 @@ namespace SixtyFiveOhTwo.Emit
         public ProgramBuilder SetYRegister(byte value)
         {
             AddInstruction(new LoadYImmediateInstruction().Write(value));
+            return this;
+        }
+
+        public ProgramBuilder SetARegister(byte value)
+        {
+            AddInstruction(new LoadAImmediateInstruction().Write(value));
             return this;
         }
     }

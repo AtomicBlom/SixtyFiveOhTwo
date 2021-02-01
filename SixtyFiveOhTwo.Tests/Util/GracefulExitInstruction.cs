@@ -15,7 +15,7 @@ namespace SixtyFiveOhTwo.Tests.Util
         }
 
         public byte OpCode => 0xFF;
-        public string Mnemonic => "*END";
+        public string Mnemonic => "**TEST END";
         public void Execute(CPU cpu)
         {
             _cpuExecutionCompletedTokenSource.Cancel();
