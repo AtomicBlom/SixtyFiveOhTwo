@@ -100,7 +100,7 @@ namespace SixtyFiveOhTwo.Components
         {
             var count = Math.Min(maxCount, _writtenResults);
             var results = new DebugExecutionResult[count];
-            var cursor = _executionWritePosition;
+            var cursor = _executionWritePosition - 1;
             var i = 0;
             while (count > 0)
             {

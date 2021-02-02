@@ -79,16 +79,16 @@ namespace SixtyFiveOhTwo.Instructions.Debugger
 
         public override string ToString()
         {
-            var address = UsedFields.HasFlag(UsedFields.Address) ? $"{nameof(Address)}: {Address}, " : string.Empty;
-            var pointerToAddress = UsedFields.HasFlag(UsedFields.PointerToAddress) ? $"{nameof(PointerToAddress)}: {PointerToAddress}, " : string.Empty;
-            var zeroPageOffset = UsedFields.HasFlag(UsedFields.ZeroPageOffset) ? $"{nameof(ZeroPageOffset)}: {ZeroPageOffset}, " : string.Empty;
-            var x = UsedFields.HasFlag(UsedFields.X) ? $"{nameof(X)}: {X}, " : string.Empty;
-            var y = UsedFields.HasFlag(UsedFields.Y) ? $"{nameof(Y)}: {Y}, " : string.Empty;
-            var value = UsedFields.HasFlag(UsedFields.Value) ? $"{nameof(Value)}: {Value}, " : string.Empty;
+            var address = UsedFields.HasFlag(UsedFields.Address) ? $"{nameof(Address)}: {Address:X4}, " : string.Empty;
+            var pointerToAddress = UsedFields.HasFlag(UsedFields.PointerToAddress) ? $"{nameof(PointerToAddress)}: {PointerToAddress:X4}, " : string.Empty;
+            var zeroPageOffset = UsedFields.HasFlag(UsedFields.ZeroPageOffset) ? $"{nameof(ZeroPageOffset)}: {ZeroPageOffset:X2}, " : string.Empty;
+            var x = UsedFields.HasFlag(UsedFields.X) ? $"{nameof(X)}: {X:X2}, " : string.Empty;
+            var y = UsedFields.HasFlag(UsedFields.Y) ? $"{nameof(Y)}: {Y:X2}, " : string.Empty;
+            var value = UsedFields.HasFlag(UsedFields.Value) ? $"{nameof(Value)}: {Value:X2}, " : string.Empty;
 
 
 
-            return $"{nameof(OpCode)}: {OpCode}, Mode: {AddressingMode}, {nameof(CPUState)}: {{{CPUState}}}, {address}{pointerToAddress}{zeroPageOffset}{x}{y}{value}";
+            return $"{nameof(OpCode)}: {OpCode:X2}, Mode: {AddressingMode}, {nameof(CPUState)}: {{{CPUState}}}, {address}{pointerToAddress}{zeroPageOffset}{x}{y}{value}";
         }
     }
 }

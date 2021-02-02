@@ -13,7 +13,7 @@
 
         public override string ToString()
         {
-            return $"PC: {ProgramCounter}, SP: {StackPointer}, A: {Accumulator}, X: {IndexRegisterX}, Y: {IndexRegisterY}, P: {Status}";
+            return $"PC: {ProgramCounter:X4}, SP: {StackPointer:X2}, A: {Accumulator:X2}, X: {IndexRegisterX:X2}, Y: {IndexRegisterY:X2}, P: {Status}";
         }
     }
 }
