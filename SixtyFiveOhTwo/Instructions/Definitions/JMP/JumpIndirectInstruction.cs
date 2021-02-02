@@ -1,23 +1,25 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.JMP
 {
-    public sealed class JumpIndirectInstruction : IInstruction
+    public sealed class JumpIndirectInstruction : IndirectInstructionBase
     {
-        public byte OpCode => 0x6C;
-        public string Mnemonic => "JMP";
+        public JumpIndirectInstruction() : base(0x6C, "JMP") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : IndirectInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
-            var address = cpu.ReadProgramCounterWord();
-            cpuState.ProgramCounter = cpu.Bus.ReadWord(address);
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
+
+            protected override void RunMicrocode(ushort addressOfAddress)
+            {
+                CPUState.ProgramCounter = ReadWordFromBus(addressOfAddress);
+            }
         }
 
-        public IInstructionEncoder Write(byte value)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new IndirectAddressInstructionEncoder(this, value);
+            return new Microcode(this, cpu);
         }
     }
 }

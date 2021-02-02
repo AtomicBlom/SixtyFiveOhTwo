@@ -4,10 +4,10 @@ namespace SixtyFiveOhTwo.Instructions.Encoding
 {
     public class IndirectAddressInstructionEncoder : IInstructionEncoder
     {
-        private readonly IInstruction _instruction;
+        private readonly InstructionBase _instruction;
         private readonly ushort _addressWithAddress;
 
-        public IndirectAddressInstructionEncoder(IInstruction instruction, ushort addressWithAddress)
+        public IndirectAddressInstructionEncoder(InstructionBase instruction, ushort addressWithAddress)
         {
             _instruction = instruction;
             _addressWithAddress = addressWithAddress;

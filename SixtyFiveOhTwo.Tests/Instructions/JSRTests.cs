@@ -20,11 +20,11 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         [Fact]
         public void JMP_Absolute_SetsProgramCounter()
         {
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
-                .AddInstruction(new JumpToSubroutineInstruction().Write(ProgramStartAddress.Offset(0x100)))
+                .AddInstruction<JumpToSubroutineInstruction>(ProgramStartAddress.Offset(0x100))
                 .MoveCursor(ProgramStartAddress.Offset(0x100))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .AddInstruction<GracefulExitInstruction>()
                 .Write(MemoryBytes);
 
             Cpu.Run();

@@ -10,5 +10,10 @@
         public byte IndexRegisterY;
 
         public ProcessorStatus Status;
+
+        public override string ToString()
+        {
+            return $"PC: {ProgramCounter}, SP: {StackPointer}, A: {Accumulator}, X: {IndexRegisterX}, Y: {IndexRegisterY}, P: {Status}";
+        }
     }
 }

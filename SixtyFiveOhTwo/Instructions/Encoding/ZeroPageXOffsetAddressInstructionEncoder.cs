@@ -2,10 +2,10 @@
 {
     public class ZeroPageXOffsetAddressInstructionEncoder : IInstructionEncoder
     {
-        private readonly IInstruction _instruction;
+        private readonly InstructionBase _instruction;
         private readonly byte _zeroPageAddress;
 
-        public ZeroPageXOffsetAddressInstructionEncoder(IInstruction instruction, byte zeroPageAddress)
+        public ZeroPageXOffsetAddressInstructionEncoder(InstructionBase instruction, byte zeroPageAddress)
         {
             _instruction = instruction;
             _zeroPageAddress = zeroPageAddress;

@@ -1,30 +1,27 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
-using static SixtyFiveOhTwo.Util.UShortExtensions;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
+using static SixtyFiveOhTwo.Util.AddressUtilities;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
-    //Logic:
-    //A = M
-    //P.N = A.7
-    //P.Z = (A == 0) ? 1 : 0
-    public sealed class LoadAZeroPageInstruction : IInstruction
+    public sealed class LoadAZeroPageInstruction : ZeroPageInstructionBase
     {
-        public byte OpCode => 0xA5;
-        public string Mnemonic => "LDA";
+        public LoadAZeroPageInstruction() : base(0xA5, "LDA") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : ZeroPageInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
-            var address = cpu.ReadProgramCounterByte();
-            cpuState.Accumulator = cpu.Bus.ReadByte(ZeroPageAddress(address));
-
-            cpuState.Status = cpuState.Status.SetFromRegister(cpuState.Accumulator);
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
+            
+            protected override void RunMicrocode(byte zeroPageOffset)
+            {
+                CPUState.Accumulator = ReadByteFromBus(ZeroPageAddress(zeroPageOffset));
+                CPUState.Status = CPUState.Status.SetNumericFlags(CPUState.Accumulator);
+            }
         }
 
-        public IInstructionEncoder Write(byte zeroPageAddress)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new ZeroPageAddressInstructionEncoder(this, zeroPageAddress);
+            return new Microcode(this, cpu);
         }
     }
 }

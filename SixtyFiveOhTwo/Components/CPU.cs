@@ -1,5 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using SixtyFiveOhTwo.Instructions;
+using SixtyFiveOhTwo.Instructions.Debugger;
 
 namespace SixtyFiveOhTwo.Components
 {
@@ -11,15 +15,17 @@ namespace SixtyFiveOhTwo.Components
         public const ushort StackEnd = 0x01FF;
         public const ushort ZeroPageStart = 0x0000;
 
-        private readonly IInstruction[] _instructions;
+        private readonly Dictionary<byte, InstructionBase> _instructions;
         private readonly IBus _bus;
         private readonly CancellationTokenSource _finishToken;
         private readonly ILogger _logger;
         private CPUState _state;
+
+        private bool _isRunning = false;
         
-        public CPU(IInstruction[] instructions, IBus bus, CancellationTokenSource finishToken, ILogger logger)
+        public CPU(IBus bus, CancellationTokenSource finishToken, ILogger logger)
         {
-            _instructions = instructions;
+            _instructions = InstructionSetBuilder.CreateInstructionSet().ToDictionary(k => k.OpCode);
             _bus = bus;
             _finishToken = finishToken;
             _logger = logger;
@@ -27,9 +33,22 @@ namespace SixtyFiveOhTwo.Components
 
         public ref CPUState State => ref _state;
         public IBus Bus => _bus;
+        public IEnumerable<InstructionBase> InstructionSet => _instructions.Values;
+
+        private readonly DebugExecutionResult[] _executionResults = new DebugExecutionResult[0xFFF];
+        private uint _executionWritePosition = 0;
+        private uint _writtenResults = 0;
 
         public void Run()
         {
+            lock (this)
+            {
+                if (_isRunning) throw new ExecutionEngineException("Engine is already running");
+                _isRunning = true;
+            }
+
+            var microcodeLookup = InstructionSetBuilder.BuildMicrocodeArray(this, _instructions.Values);
+
             Reset();
             _bus.Clock.Wait();
             while (!_finishToken.IsCancellationRequested)
@@ -37,11 +56,18 @@ namespace SixtyFiveOhTwo.Components
                 var address = _state.ProgramCounter;
                 _logger.Write($"{address:X4}: ");
                 var opCode = ReadProgramCounterByte();
-                var instruction = _instructions[opCode];
-                if (instruction is not null)
+                var microcode = microcodeLookup[opCode];
+                if (microcode is not null)
                 {
-                    instruction.Execute(this);
-                    _logger.WriteLine($" ({Bus.Clock.Ticks:00000000} {instruction.GetType().Name})");
+                    _executionResults[_executionWritePosition] = microcode.Execute();
+                    _executionWritePosition++;
+                    _executionWritePosition &= 0xFFF;
+                    if (_executionWritePosition > _writtenResults)
+                    {
+                        _writtenResults = _executionWritePosition;
+                    }
+
+                    _logger.WriteLine($" ({Bus.Clock.Ticks:00000000} {microcode.Instruction.GetType().Name})");
                 }
                 else
                 {
@@ -61,6 +87,33 @@ namespace SixtyFiveOhTwo.Components
             _logger.WriteLine($"    X:      {_state.IndexRegisterX:X2} ({_state.IndexRegisterX})");
             _logger.WriteLine($"    Y:      {_state.IndexRegisterY:X2} ({_state.IndexRegisterY})");
             _logger.WriteLine($"    Status: {_state.Status:F}");
+
+            var lastExecutionResults = GetExecutionResults(10);
+
+            foreach (var debugExecutionResult in lastExecutionResults)
+            {
+                _logger.WriteLine($"{debugExecutionResult}");
+            }
+        }
+
+        private DebugExecutionResult[] GetExecutionResults(int maxCount)
+        {
+            var count = Math.Min(maxCount, _writtenResults);
+            var results = new DebugExecutionResult[count];
+            var cursor = _executionWritePosition;
+            var i = 0;
+            while (count > 0)
+            {
+                results[i] = _executionResults[cursor];
+
+                --cursor;
+                cursor &= 0xFFF;
+                count--;
+                i++;
+            }
+
+            return results;
+
         }
 
         public byte ReadProgramCounterByte()
@@ -104,6 +157,21 @@ namespace SixtyFiveOhTwo.Components
             }
             var value = _bus.ReadByte((ushort)(0x0100 | State.StackPointer));
             return value;
+        }
+
+        public T GetInstruction<T>() where T: InstructionBase
+        {
+            return _instructions.Values.OfType<T>().FirstOrDefault();
+        }
+
+        public void AddNonStandardInstruction(InstructionBase instruction)
+        {
+            if (_instructions.TryGetValue(instruction.OpCode, out var existingInstruction))
+                throw new ArgumentException(
+                    $"Opcode {instruction.OpCode} was already in use by {existingInstruction.GetType().Name}",
+                    nameof(instruction));
+
+            _instructions.Add(instruction.OpCode, instruction);
         }
     }
 }

@@ -1,33 +1,29 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
-using static SixtyFiveOhTwo.Util.UShortExtensions;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
+using static SixtyFiveOhTwo.Util.AddressUtilities;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
-    //Logic:
-    //A = M
-    //P.N = A.7
-    //P.Z = (A == 0) ? 1 : 0
-    public sealed class LoadAZeroPageXOffsetInstruction : IInstruction
+    public sealed class LoadAZeroPageXOffsetInstruction : ZeroPageXOffsetInstructionBase
     {
-        public byte OpCode => 0xB5;
-        public string Mnemonic => "LDA";
+	    public LoadAZeroPageXOffsetInstruction() : base(0xB5, "LDA") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : ZeroPageXOffsetInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
 
-            var zeroPageOffset = cpu.ReadProgramCounterByte();
-            cpu.Bus.Clock.Wait(); //One cycle for the adder to calculate
-            var address = ZeroPageAddress(zeroPageOffset, cpuState.IndexRegisterX);
-            cpuState.Accumulator = cpu.Bus.ReadByte(address);
-
-            cpuState.Status = cpuState.Status.SetFromRegister(cpuState.Accumulator);
+            protected override void RunMicrocode(byte zeroPageOffset)
+            {
+                Yield();
+                var address = ZeroPageAddress(zeroPageOffset, CPUState.IndexRegisterX);
+                CPUState.Accumulator = ReadByteFromBus(address);
+                CPUState.Status = CPUState.Status.SetNumericFlags(CPUState.Accumulator);
+            }
         }
 
-        public IInstructionEncoder Write(byte zeroPageAddress)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new ZeroPageXOffsetAddressInstructionEncoder(this, zeroPageAddress);
+            return new Microcode(this, cpu);
         }
     }
 }

@@ -1,31 +1,27 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
-using static SixtyFiveOhTwo.Util.UShortExtensions;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
+using static SixtyFiveOhTwo.Util.AddressUtilities;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
 {
-    //Logic:
-    //X = M
-    //P.N = X.7
-    //P.Z = (X == 0) ? 1 : 0
-    public sealed class LoadXZeroPageInstruction : IInstruction
+    public sealed class LoadXZeroPageInstruction : ZeroPageInstructionBase
     {
-        public byte OpCode => 0xA6;
-        public string Mnemonic => "LDX";
+        public LoadXZeroPageInstruction() : base(0xA6, "LDX") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : ZeroPageInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
 
-            var zeroPageOffset = cpu.ReadProgramCounterByte();
-            cpuState.IndexRegisterX = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset));
-
-            cpuState.Status = cpuState.Status.SetFromRegister(cpuState.IndexRegisterX);
+            protected override void RunMicrocode(byte zeroPageOffset)
+            {
+                CPUState.IndexRegisterX = ReadByteFromBus(ZeroPageAddress(zeroPageOffset));
+                CPUState.Status = CPUState.Status.SetNumericFlags(CPUState.IndexRegisterX);
+            }
         }
 
-        public IInstructionEncoder Write(byte zeroPageAddress)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new ZeroPageAddressInstructionEncoder(this, zeroPageAddress);
+            return new Microcode(this, cpu);
         }
     }
 }

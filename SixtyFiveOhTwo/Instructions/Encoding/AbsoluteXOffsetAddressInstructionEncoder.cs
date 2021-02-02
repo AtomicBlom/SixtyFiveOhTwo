@@ -4,10 +4,10 @@ namespace SixtyFiveOhTwo.Instructions.Encoding
 {
     public class AbsoluteXOffsetAddressInstructionEncoder : IInstructionEncoder
     {
-        private readonly IInstruction _instruction;
+        private readonly InstructionBase _instruction;
         private readonly ushort _absoluteAddress;
 
-        public AbsoluteXOffsetAddressInstructionEncoder(IInstruction instruction, ushort absoluteAddress)
+        public AbsoluteXOffsetAddressInstructionEncoder(InstructionBase instruction, ushort absoluteAddress)
         {
             _instruction = instruction;
             _absoluteAddress = absoluteAddress;

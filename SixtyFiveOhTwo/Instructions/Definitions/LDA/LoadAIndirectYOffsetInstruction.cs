@@ -1,41 +1,42 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 using SixtyFiveOhTwo.Util;
-using static SixtyFiveOhTwo.Util.UShortExtensions;
+using static SixtyFiveOhTwo.Util.AddressUtilities;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
-    public sealed class LoadAIndirectYOffsetInstruction : IInstruction
+    public sealed class LoadAIndirectYOffsetInstruction : IndirectYOffsetInstructionBase
     {
-        public byte OpCode => 0xB1;
-        public string Mnemonic => "LDA";
+        public LoadAIndirectYOffsetInstruction() : base(0xB1, "LDA") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : IndirectYOffsetInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
 
-            var zeroPageOffset = cpu.ReadProgramCounterByte();
-            var lsb = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset));
-            var msb = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset, 1));
-
-            var baseAddress = MakeUShort(msb, lsb);
-            var address = baseAddress.Offset(cpuState.IndexRegisterY);
-
-            var firstFetchAddress = MakeUShort(baseAddress.HighOrderByte(), address.LowOrderByte());
-            var value = cpu.Bus.ReadByte(firstFetchAddress);
-
-            if (baseAddress.HighOrderByte() != address.HighOrderByte())
+            protected override void RunMicrocode(byte zeroPageOffset)
             {
-                value = cpu.Bus.ReadByte(address);
-            }
+                var lsb = ReadByteFromBus(ZeroPageAddress(zeroPageOffset));
+                var msb = ReadByteFromBus(ZeroPageAddress(zeroPageOffset, 1));
 
-            cpuState.Accumulator = value;
-            cpuState.Status = cpuState.Status.SetFromRegister(cpuState.Accumulator);
+                var baseAddress = MakeUShort(msb, lsb);
+                var address = baseAddress.Offset(CPUState.IndexRegisterY);
+
+                var firstFetchAddress = MakeUShort(baseAddress.HighOrderByte(), address.LowOrderByte());
+                var value = ReadByteFromBus(firstFetchAddress);
+
+                if (baseAddress.HighOrderByte() != address.HighOrderByte())
+                {
+                    value = ReadByteFromBus(address);
+                }
+
+                CPUState.Accumulator = value;
+                CPUState.Status = CPUState.Status.SetNumericFlags(CPUState.Accumulator);
+            }
         }
 
-        public IInstructionEncoder Write(byte zeroPageAddress)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new IndirectYAddressInstructionEncoder(this, zeroPageAddress);
+            return new Microcode(this, cpu);
         }
     }
 }

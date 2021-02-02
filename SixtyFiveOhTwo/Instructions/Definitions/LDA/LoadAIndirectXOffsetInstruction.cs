@@ -1,32 +1,27 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
-using static SixtyFiveOhTwo.Util.UShortExtensions;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
-    public sealed class LoadAIndirectXOffsetInstruction : IInstruction
+    public sealed class LoadAIndirectXOffsetInstruction : IndirectXOffsetInstructionBase
     {
-        public byte OpCode => 0xA1;
-        public string Mnemonic => "LDA";
+	    public LoadAIndirectXOffsetInstruction() : base(0xA1, "LDA") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : IndirectXOffsetInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
 
-            var zeroPageOffset = cpu.ReadProgramCounterByte();
-            var lsb = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset, cpuState.IndexRegisterX));
-            var msb = cpu.Bus.ReadByte(ZeroPageAddress(zeroPageOffset, cpuState.IndexRegisterX, 1));
-            var address = MakeUShort(msb, lsb);
-
-            cpu.Bus.Clock.Wait(); //FIXME: Not sure where the extra wait comes from?
-            cpuState.Accumulator = cpu.Bus.ReadByte(address);
-
-            cpuState.Status = cpuState.Status.SetFromRegister(cpuState.Accumulator);
+            protected override void RunMicrocode(ushort address)
+            {
+                Yield();
+                CPUState.Accumulator = ReadByteFromBus(address);
+                CPUState.Status = CPUState.Status.SetNumericFlags(CPUState.Accumulator);
+            }
         }
 
-        public IInstructionEncoder Write(byte zeroPageAddress)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new IndirectXAddressInstructionEncoder(this, zeroPageAddress);
+            return new Microcode(this, cpu);
         }
     }
 }

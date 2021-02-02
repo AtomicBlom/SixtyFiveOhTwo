@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace SixtyFiveOhTwo
+namespace SixtyFiveOhTwo.Runner
 {
     public class Logger : ILogger
     {

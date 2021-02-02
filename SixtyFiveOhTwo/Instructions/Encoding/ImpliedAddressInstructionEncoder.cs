@@ -2,9 +2,9 @@
 {
     public class ImpliedAddressInstructionEncoder : IInstructionEncoder
     {
-        private readonly IInstruction _instruction;
+        private readonly InstructionBase _instruction;
 
-        public ImpliedAddressInstructionEncoder(IInstruction instruction)
+        public ImpliedAddressInstructionEncoder(InstructionBase instruction)
         {
             _instruction = instruction;
         }

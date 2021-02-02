@@ -2,10 +2,10 @@
 {
     public class ImmediateAddressInstructionEncoder : IInstructionEncoder
     {
-        private readonly IInstruction _instruction;
+        private readonly InstructionBase _instruction;
         private readonly byte _value;
 
-        public ImmediateAddressInstructionEncoder(IInstruction instruction, byte value)
+        public ImmediateAddressInstructionEncoder(InstructionBase instruction, byte value)
         {
             _instruction = instruction;
             _value = value;

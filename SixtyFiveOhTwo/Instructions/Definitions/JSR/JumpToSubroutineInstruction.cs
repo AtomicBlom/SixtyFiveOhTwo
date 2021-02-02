@@ -1,29 +1,32 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 using SixtyFiveOhTwo.Util;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.JSR
 {
-    public sealed class JumpToSubroutineInstruction : IInstruction
+    public sealed class JumpToSubroutineInstruction : AbsoluteInstructionBase
     {
-        public byte OpCode => 0x20;
-        public string Mnemonic => "JSR";
+        public JumpToSubroutineInstruction() : base(0x20, "JSR") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : AbsoluteInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
-            var t = cpuState.ProgramCounter.Offset(-1);
-            
-            cpu.PushStack(t.HighOrderByte());
-            cpu.PushStack(t.LowOrderByte());
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
 
-            cpuState.ProgramCounter = cpu.ReadProgramCounterWord();
-            cpu.Bus.Clock.Wait(); //Needs an extra wait in here somewhere
+            protected override void RunMicrocode(ushort address)
+            {
+                var t = CPUState.ProgramCounter.Offset(-3);
+
+                PushStack(t.HighOrderByte());
+                PushStack(t.LowOrderByte());
+
+                CPUState.ProgramCounter = address;
+                Yield();
+            }
         }
 
-        public IInstructionEncoder Write(ushort value)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new AbsoluteAddressInstructionEncoder(this, value);
+            return new Microcode(this, cpu);
         }
     }
 }

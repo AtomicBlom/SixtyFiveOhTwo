@@ -2,10 +2,10 @@
 {
     public class IndirectYAddressInstructionEncoder : IInstructionEncoder
     {
-        private readonly IInstruction _instruction;
+        private readonly InstructionBase _instruction;
         private readonly byte _zeroPageOffset;
 
-        public IndirectYAddressInstructionEncoder(IInstruction instruction, byte zeroPageOffset)
+        public IndirectYAddressInstructionEncoder(InstructionBase instruction, byte zeroPageOffset)
         {
             _instruction = instruction;
             _zeroPageOffset = zeroPageOffset;

@@ -4,7 +4,7 @@ using SixtyFiveOhTwo.Components;
 
 namespace SixtyFiveOhTwo.Util
 {
-    public static class UShortExtensions
+    public static class AddressUtilities
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [DebuggerStepThrough]

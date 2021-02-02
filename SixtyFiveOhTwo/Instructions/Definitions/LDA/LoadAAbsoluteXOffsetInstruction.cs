@@ -1,39 +1,39 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 using SixtyFiveOhTwo.Util;
-using static SixtyFiveOhTwo.Util.UShortExtensions;
+using static SixtyFiveOhTwo.Util.AddressUtilities;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
-    public sealed class LoadAAbsoluteXOffsetInstruction : IInstruction
+    public sealed class LoadAAbsoluteXOffsetInstruction : AbsoluteWithXOffsetInstructionBase
     {
-        public byte OpCode => 0xBD;
-        public string Mnemonic => "LDA";
+	    public LoadAAbsoluteXOffsetInstruction() : base(0xBD, "LDA") { }
 
-        // read across boundary may incur an extra read
-        //https://retrocomputing.stackexchange.com/questions/145/why-does-6502-indexed-lda-take-an-extra-cycle-at-page-boundaries
-
-        public void Execute(CPU cpu)
+        private new class Microcode : AbsoluteWithXOffsetInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
 
-            var absoluteAddress = cpu.ReadProgramCounterWord();
-            var address = absoluteAddress.Offset(cpuState.IndexRegisterX);
-            var firstFetchAddress = MakeUShort(absoluteAddress.HighOrderByte(), address.LowOrderByte());
-            var value = cpu.Bus.ReadByte(firstFetchAddress);
-
-            if (absoluteAddress.HighOrderByte() != address.HighOrderByte())
+            // read across boundary may incur an extra read
+            //https://retrocomputing.stackexchange.com/questions/145/why-does-6502-indexed-lda-take-an-extra-cycle-at-page-boundaries
+            protected override void RunMicrocode(ushort absoluteAddress)
             {
-                value = cpu.Bus.ReadByte(address);
+                var address = absoluteAddress.Offset(CPUState.IndexRegisterX);
+                var firstFetchAddress = MakeUShort(absoluteAddress.HighOrderByte(), address.LowOrderByte());
+                var value = ReadByteFromBus(firstFetchAddress);
+
+                if (absoluteAddress.HighOrderByte() != address.HighOrderByte())
+                {
+                    value = ReadByteFromBus(address);
+                }
+
+                CPUState.Accumulator = value;
+                CPUState.Status = CPUState.Status.SetNumericFlags(CPUState.Accumulator);
             }
-            
-            cpuState.Accumulator = value;
-            cpuState.Status = cpuState.Status.SetFromRegister(cpuState.Accumulator);
         }
 
-        public IInstructionEncoder Write(ushort absoluteAddress)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new AbsoluteXOffsetAddressInstructionEncoder(this, absoluteAddress);
+            return new Microcode(this, cpu);
         }
     }
 }

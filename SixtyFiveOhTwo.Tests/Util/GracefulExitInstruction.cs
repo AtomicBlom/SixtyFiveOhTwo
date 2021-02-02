@@ -1,29 +1,38 @@
 using System.Threading;
 using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions;
-using SixtyFiveOhTwo.Instructions.Encoding;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 
 namespace SixtyFiveOhTwo.Tests.Util
 {
-    public class GracefulExitInstruction : IInstruction
+    public class GracefulExitInstruction : ImpliedInstructionBase
     {
         private readonly CancellationTokenSource _cpuExecutionCompletedTokenSource;
 
-        public GracefulExitInstruction(CancellationTokenSource cpuExecutionCompletedTokenSource)
+        public GracefulExitInstruction(CancellationTokenSource cpuExecutionCompletedTokenSource) : base(0xFF, "**TEST END")
         {
             _cpuExecutionCompletedTokenSource = cpuExecutionCompletedTokenSource;
         }
 
-        public byte OpCode => 0xFF;
-        public string Mnemonic => "**TEST END";
-        public void Execute(CPU cpu)
+        private new class Microcode : ImpliedInstructionBase.Microcode
         {
-            _cpuExecutionCompletedTokenSource.Cancel();
+            private readonly CancellationTokenSource _cpuExecutionCompletedTokenSource;
+
+            public Microcode(InstructionBase instruction, CPU processor,
+                CancellationTokenSource cpuExecutionCompletedTokenSource) : base(instruction, processor)
+            {
+                _cpuExecutionCompletedTokenSource = cpuExecutionCompletedTokenSource;
+            }
+
+            protected override void RunMicrocode()
+            {
+                _cpuExecutionCompletedTokenSource.Cancel();
+            }
         }
 
-        public IInstructionEncoder Write()
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new ImpliedAddressInstructionEncoder(this);
+            return new Microcode(this, cpu, _cpuExecutionCompletedTokenSource);
         }
     }
 }

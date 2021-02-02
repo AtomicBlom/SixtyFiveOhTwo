@@ -1,21 +1,25 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.NOP
 {
-    public class NoOperationInstruction : IInstruction
+    public class NoOperationInstruction : ImpliedInstructionBase
     {
-        public byte OpCode => 0xEA;
-        public string Mnemonic => "NOP";
+        public NoOperationInstruction() : base(0xEA, "NOP") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : ImpliedInstructionBase.Microcode
         {
-            cpu.Bus.Clock.Wait();
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
+
+            protected override void RunMicrocode()
+            {
+                Yield();
+            }
         }
 
-        public IInstructionEncoder Write()
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new ImpliedAddressInstructionEncoder(this);
+            return new Microcode(this, cpu);
         }
     }
 }

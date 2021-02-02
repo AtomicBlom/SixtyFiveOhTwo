@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Instructions;
 using SixtyFiveOhTwo.Instructions.Definitions.JMP;
-using SixtyFiveOhTwo.Instructions.Definitions.JSR;
 using SixtyFiveOhTwo.Instructions.Definitions.LDA;
 using SixtyFiveOhTwo.Instructions.Definitions.LDX;
 using SixtyFiveOhTwo.Instructions.Definitions.LDY;
@@ -13,10 +14,13 @@ namespace SixtyFiveOhTwo.Emit
     {
         private readonly ILogger _logger;
         private readonly byte[] _memory = new byte[0xFFFF];
+        private readonly Dictionary<Type, InstructionBase> _instructionLookup;
+
         private ushort _currentLocation;
 
-        private ProgramBuilder(ILogger logger)
+        private ProgramBuilder(IEnumerable<InstructionBase> instructionSet, ILogger logger)
         {
+            _instructionLookup = instructionSet.Where(t => t is not null).ToDictionary(t => t.GetType());
             _logger = logger;
             _currentLocation = CPU.ResetVectorAddressLow;
         }
@@ -43,21 +47,9 @@ namespace SixtyFiveOhTwo.Emit
             _logger.WriteLine(string.Empty);
         }
 
-        private ProgramBuilder JSR(ushort address, bool cursorFollow = false)
-        {
-            AddInstruction(new JumpToSubroutineInstruction().Write(address));
-
-            if (cursorFollow)
-            {
-                _currentLocation = address;
-            }
-
-            return this;
-        }
-
         public ProgramBuilder JMP(ushort address, bool cursorFollow = false)
         {
-            AddInstruction(new JumpAbsoluteInstruction().Write(address));
+            AddInstruction<JumpAbsoluteInstruction>(address);
 
             if (cursorFollow)
             {
@@ -67,10 +59,46 @@ namespace SixtyFiveOhTwo.Emit
             return this;
         }
 
-        public static ProgramBuilder Start(ILogger logger)
+        public static ProgramBuilder Start(IEnumerable<InstructionBase> instructionSet, ILogger logger)
         {
             logger.WriteLine("--- Start Program Builder ---");
-            return new(logger);
+            return new(instructionSet, logger);
+        }
+
+        public ProgramBuilder AddInstruction<T>(ushort parameter) where T : InstructionBase, IParameterInstruction<ushort>
+        {
+            if (!_instructionLookup.TryGetValue(typeof(T), out var instruction))
+                throw new ArgumentException($"Could not find instruction of type {typeof(T)} in instruction set");
+
+            var encoder = ((T)instruction).GetEncoder(parameter);
+
+            _logger.WriteLine($"{_currentLocation:X4}: {encoder.ToStringMnemonic()}");
+            encoder.Write(ref _currentLocation, _memory);
+            return this;
+        }
+
+        public ProgramBuilder AddInstruction<T>(byte parameter) where T : InstructionBase, IParameterInstruction<byte>
+        {
+            if (!_instructionLookup.TryGetValue(typeof(T), out var instruction))
+                throw new ArgumentException($"Could not find instruction of type {typeof(T)} in instruction set");
+
+            var encoder = ((T)instruction).GetEncoder(parameter);
+
+            _logger.WriteLine($"{_currentLocation:X4}: {encoder.ToStringMnemonic()}");
+            encoder.Write(ref _currentLocation, _memory);
+            return this;
+        }
+
+        public ProgramBuilder AddInstruction<T>() where T : InstructionBase, INoParameterInstruction
+        {
+            if (!_instructionLookup.TryGetValue(typeof(T), out var instruction))
+                throw new ArgumentException($"Could not find instruction of type {typeof(T)} in instruction set");
+
+            var encoder = ((T)instruction).GetEncoder();
+
+            _logger.WriteLine($"{_currentLocation:X4}: {encoder.ToStringMnemonic()}");
+            encoder.Write(ref _currentLocation, _memory);
+            return this;
         }
 
         public ProgramBuilder AddInstruction(IInstructionEncoder opCodeWriter)
@@ -101,19 +129,19 @@ namespace SixtyFiveOhTwo.Emit
 
         public ProgramBuilder SetXRegister(byte value)
         {
-            AddInstruction(new LoadXImmediateInstruction().Write(value));
+            AddInstruction<LoadXImmediateInstruction>(value);
             return this;
         }
 
         public ProgramBuilder SetYRegister(byte value)
         {
-            AddInstruction(new LoadYImmediateInstruction().Write(value));
+            AddInstruction<LoadYImmediateInstruction>(value);
             return this;
         }
 
         public ProgramBuilder SetARegister(byte value)
         {
-            AddInstruction(new LoadAImmediateInstruction().Write(value));
+            AddInstruction<LoadAImmediateInstruction>(value);
             return this;
         }
     }

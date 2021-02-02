@@ -2,8 +2,6 @@
 using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Emit;
 using SixtyFiveOhTwo.Instructions.Definitions.LDA;
-using SixtyFiveOhTwo.Instructions.Definitions.LDX;
-using SixtyFiveOhTwo.Instructions.Definitions.LDY;
 using SixtyFiveOhTwo.Tests.Util;
 using SixtyFiveOhTwo.Util;
 using Xunit;
@@ -24,11 +22,11 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         public void LDA_ZeroPage_ShouldSetAccumulatorAndStatus(byte value, bool negativeFlag, bool zeroFlag)
         {
             byte dataStart = 0x05;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadAZeroPageInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .AddInstruction<LoadAZeroPageInstruction>(dataStart)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, value)
                 .Write(MemoryBytes);
 
@@ -52,11 +50,11 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         [InlineData(0x00, false, true)]
         public void LDA_Immediate_ShouldSetAccumulatorAndStatus(byte value, bool negativeFlag, bool zeroFlag)
         {
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadAImmediateInstruction().Write(value))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .AddInstruction<LoadAImmediateInstruction>(value)
+                .AddInstruction<GracefulExitInstruction>()
                 .Write(MemoryBytes);
 
             Cpu.Run();
@@ -80,12 +78,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         public void LDA_ZeroPageXOffset_ShouldSetAccumulatorAndStatus(byte value, bool negativeFlag, bool zeroFlag)
         {
             byte dataStart = 0x05;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadXImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAZeroPageXOffsetInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetXRegister(0x01)
+                .AddInstruction<LoadAZeroPageXOffsetInstruction>(dataStart)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, 0x55, value)
                 .Write(MemoryBytes);
 
@@ -111,11 +109,11 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         public void LDA_Absolute_ShouldSetAccumulatorAndStatus(byte value, bool negativeFlag, bool zeroFlag)
         {
             ushort dataStart = 0xAAA5;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadAAbsoluteInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .AddInstruction<LoadAAbsoluteInstruction>(dataStart)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, value)
                 .Write(MemoryBytes);
 
@@ -140,12 +138,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         public void LDA_AbsoluteXOffset_ShouldSetAccumulatorAndStatus(byte value, bool negativeFlag, bool zeroFlag)
         {
             ushort dataStart = 0xAAA5;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadXImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAAbsoluteXOffsetInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetXRegister(0x01)
+                .AddInstruction<LoadAAbsoluteXOffsetInstruction>(dataStart)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, 0x55, value)
                 .Write(MemoryBytes);
 
@@ -169,12 +167,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         public void LDA_AbsoluteXOffset_AcrossPageBoundary_UsesAnExtraClockCycle()
         {
             ushort dataStart = 0xAAFF;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadXImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAAbsoluteXOffsetInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetXRegister(0x01)
+                .AddInstruction<LoadAAbsoluteXOffsetInstruction>(dataStart)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, 0x55, 0x66)
                 .Write(MemoryBytes);
 
@@ -199,12 +197,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         public void LDA_AbsoluteYOffset_ShouldSetAccumulatorAndStatus(byte value, bool negativeFlag, bool zeroFlag)
         {
             ushort dataStart = 0xAAA5;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadYImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAAbsoluteYOffsetInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetYRegister(0x01)
+                .AddInstruction<LoadAAbsoluteYOffsetInstruction>(dataStart)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, 0x55, value)
                 .Write(MemoryBytes);
 
@@ -228,12 +226,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         public void LDA_AbsoluteYOffset_AcrossPageBoundary_UsesAnExtraClockCycle()
         {
             ushort dataStart = 0xAAFF;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadYImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAAbsoluteYOffsetInstruction().Write(dataStart))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetYRegister(0x01)
+                .AddInstruction<LoadAAbsoluteYOffsetInstruction>(dataStart)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, 0x55, 0x66)
                 .Write(MemoryBytes);
 
@@ -259,12 +257,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         {
             ushort zeroPageStart = 0x0000;
             ushort dataStart = 0xAAFF;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadXImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAIndirectXOffsetInstruction().Write(0x00))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetXRegister(0x01)
+                .AddInstruction<LoadAIndirectXOffsetInstruction>(0x00)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, value)
                 .SetData(zeroPageStart, 0x88, 0xFF, 0xAA)
                 .Write(MemoryBytes);
@@ -293,12 +291,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         {
             ushort zeroPageStart = 0x0000;
             ushort dataStart = 0xAAF0;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadYImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAIndirectYOffsetInstruction().Write(0x01))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetYRegister(0x01)
+                .AddInstruction<LoadAIndirectYOffsetInstruction>(0x01)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, 0x55, value)
                 .SetData(zeroPageStart, 0x88, 0xF0, 0xAA)
                 .Write(MemoryBytes);
@@ -324,12 +322,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         {
             ushort zeroPageStart = 0x0000;
             ushort dataStart = 0xAAFF;
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .AddInstruction(new LoadYImmediateInstruction().Write(0x01))
-                .AddInstruction(new LoadAIndirectYOffsetInstruction().Write(0x01))
-                .AddInstruction(GracefulExitInstruction.Write())
+                .SetYRegister(0x01)
+                .AddInstruction<LoadAIndirectYOffsetInstruction>(0x01)
+                .AddInstruction<GracefulExitInstruction>()
                 .SetData(dataStart, 0x55, 0x00)
                 .SetData(zeroPageStart, 0x88, 0xFF, 0xAA)
                 .Write(MemoryBytes);

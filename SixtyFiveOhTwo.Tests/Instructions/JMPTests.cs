@@ -20,11 +20,11 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         [Fact]
         public void JMP_Absolute_SetsProgramCounter()
         {
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
-                .AddInstruction(new JumpAbsoluteInstruction().Write(ProgramStartAddress))
+                .AddInstruction<JumpAbsoluteInstruction>(ProgramStartAddress)
                 .MoveCursor(ProgramStartAddress)
-                .AddInstruction(GracefulExitInstruction.Write())
+                .AddInstruction<GracefulExitInstruction>()
                 .Write(MemoryBytes);
 
             Cpu.Run();
@@ -39,12 +39,12 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         [Fact]
         public void JMP_Indirect_SetsProgramCounter()
         {
-            ProgramBuilder.Start(Logger)
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .SetData(CPU.ZeroPageStart, 00, ProgramStartAddress.LowOrderByte(), ProgramStartAddress.HighOrderByte())
-                .AddInstruction(new JumpIndirectInstruction().Write(0x0001))
+                .AddInstruction<JumpIndirectInstruction>(0x0001)
                 .MoveCursor(ProgramStartAddress)
-                .AddInstruction(GracefulExitInstruction.Write())
+                .AddInstruction<GracefulExitInstruction>()
                 .Write(MemoryBytes);
 
             Cpu.Run();

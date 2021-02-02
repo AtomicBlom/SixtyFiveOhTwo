@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions;
 using SixtyFiveOhTwo.Instructions.Definitions.JSR;
 using SixtyFiveOhTwo.Util;
 using Xunit.Abstractions;
@@ -16,7 +15,6 @@ namespace SixtyFiveOhTwo.Tests.Util
         protected CPU Cpu { get; }
         protected CPUState State => Cpu.State;
 
-        protected readonly GracefulExitInstruction GracefulExitInstruction;
         protected TestOutputLogger Logger { get; }
 
         protected InstructionTest(ITestOutputHelper testOutputHelper)
@@ -25,20 +23,19 @@ namespace SixtyFiveOhTwo.Tests.Util
             Clock = new MockClock();
 
             var cpuExecutionCompletedTokenSource = new CancellationTokenSource();
-
-            var instructionSet = new InstructionSet();
-            var instructions = instructionSet.Instructions;
-            //Add a fake instruction for unit tests to have an exit point.
-            GracefulExitInstruction = new GracefulExitInstruction(cpuExecutionCompletedTokenSource);
-            instructions[0xFF] = GracefulExitInstruction;
-
+            
             MemoryBytes = new byte[0xFFFF];
-            MemoryBytes[CPU.ResetVectorAddressLow] = new JumpToSubroutineInstruction().OpCode;
+            
+            var bus = new MockBus(Clock, MemoryBytes);
+            Cpu = new CPU(bus, cpuExecutionCompletedTokenSource, Logger);
+
+            //Add a fake instruction for unit tests to have an exit point.
+            var gracefulExitInstruction = new GracefulExitInstruction(cpuExecutionCompletedTokenSource);
+            Cpu.AddNonStandardInstruction(gracefulExitInstruction);
+
+            MemoryBytes[CPU.ResetVectorAddressLow] = Cpu.GetInstruction<JumpToSubroutineInstruction>().OpCode;
             MemoryBytes[CPU.ResetVectorAddressLow + 1] = ProgramStartAddress.LowOrderByte();
             MemoryBytes[CPU.ResetVectorAddressLow + 2] = ProgramStartAddress.HighOrderByte();
-
-            var bus = new MockBus(Clock, MemoryBytes);
-            Cpu = new CPU(instructions, bus, cpuExecutionCompletedTokenSource, Logger);
         }
     }
 }

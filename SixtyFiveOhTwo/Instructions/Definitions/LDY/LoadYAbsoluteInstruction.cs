@@ -1,25 +1,26 @@
 ﻿using SixtyFiveOhTwo.Components;
-using SixtyFiveOhTwo.Instructions.Encoding;
+using SixtyFiveOhTwo.Instructions.AddressingModes;
 
 namespace SixtyFiveOhTwo.Instructions.Definitions.LDY
 {
-    public sealed class LoadYAbsoluteInstruction : IInstruction
+    public sealed class LoadYAbsoluteInstruction : AbsoluteInstructionBase
     {
-        public byte OpCode => 0xAC;
-        public string Mnemonic => "LDY";
+        public LoadYAbsoluteInstruction() : base(0xAC, "LDY") { }
 
-        public void Execute(CPU cpu)
+        private new class Microcode : AbsoluteInstructionBase.Microcode
         {
-            ref var cpuState = ref cpu.State;
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }
 
-            var absoluteAddress = cpu.ReadProgramCounterWord();
-            cpuState.IndexRegisterY = cpu.Bus.ReadByte(absoluteAddress);
-            cpuState.Status = cpuState.Status.SetFromRegister(cpuState.IndexRegisterY);
+            protected override void RunMicrocode(ushort address)
+            {
+                CPUState.IndexRegisterY = ReadByteFromBus(address);
+                CPUState.Status = CPUState.Status.SetNumericFlags(CPUState.IndexRegisterY);
+            }
         }
 
-        public IInstructionEncoder Write(ushort absoluteAddress)
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)
         {
-            return new AbsoluteAddressInstructionEncoder(this, absoluteAddress);
+            return new Microcode(this, cpu);
         }
     }
 }
