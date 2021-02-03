@@ -3,7 +3,6 @@ using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Emit;
 using SixtyFiveOhTwo.Instructions.Definitions.LDA;
 using SixtyFiveOhTwo.Tests.Util;
-using SixtyFiveOhTwo.Util;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -36,12 +35,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDA_ZeroPage, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Theory]
@@ -63,12 +57,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDA_Immediate, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Theory]
@@ -93,13 +82,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_ZeroPageX, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Theory]
@@ -123,12 +106,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDA_Absolute, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Theory]
@@ -154,13 +132,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_AbsoluteX, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Fact]
@@ -180,14 +152,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 
             State.Accumulator.Should().Be(0x66);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_AbsoluteX, 
-                    TCnt.PageBoundaryPenalty, 
-                    TCnt.GracefulExit));
+            AssertProgramStats(1);
         }
 
         [Theory]
@@ -213,13 +178,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_AbsoluteY, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Fact]
@@ -239,14 +198,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 
             State.Accumulator.Should().Be(0x66);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 3 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_AbsoluteY, 
-                    TCnt.PageBoundaryPenalty, 
-                    TCnt.GracefulExit));
+            AssertProgramStats(1);
         }
 
         [Theory]
@@ -274,13 +226,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_IndirectX, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Theory]
@@ -308,13 +254,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
             State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_IndirectY, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Fact]
@@ -339,14 +279,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
             State.Status.Should().HaveFlag(ProcessorStatus.ZeroFlag);
             State.Status.Should().NotHaveFlag(ProcessorStatus.NegativeFlag);
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 2 + 1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.LDX_Immediate, 
-                    TCnt.LDA_IndirectY, 
-                    TCnt.PageBoundaryPenalty, 
-                    TCnt.GracefulExit));
+            AssertProgramStats(1);
         }
     }
 }

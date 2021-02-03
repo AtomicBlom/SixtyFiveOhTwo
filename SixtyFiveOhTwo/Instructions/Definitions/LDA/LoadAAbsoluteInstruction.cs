@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
     public sealed class LoadAAbsoluteInstruction : AbsoluteInstructionBase
     {
-        public LoadAAbsoluteInstruction() : base(0xAD, "LDA") { }
+        public LoadAAbsoluteInstruction() : base(0xAD, "LDA", 4) { }
 
         private new class Microcode : AbsoluteInstructionBase.Microcode
         {

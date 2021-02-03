@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
 {
     public sealed class LoadXAbsoluteInstruction : AbsoluteInstructionBase
     {
-        public LoadXAbsoluteInstruction() : base(0xAE, "LDX") { }
+        public LoadXAbsoluteInstruction() : base(0xAE, "LDX", 4) { }
         
         private new class Microcode : AbsoluteInstructionBase.Microcode
         {

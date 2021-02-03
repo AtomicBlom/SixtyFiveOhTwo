@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDY
 {
     public sealed class LoadYAbsoluteInstruction : AbsoluteInstructionBase
     {
-        public LoadYAbsoluteInstruction() : base(0xAC, "LDY") { }
+        public LoadYAbsoluteInstruction() : base(0xAC, "LDY", 4) { }
 
         private new class Microcode : AbsoluteInstructionBase.Microcode
         {

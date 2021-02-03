@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.JMP
 {
     public sealed class JumpIndirectInstruction : IndirectInstructionBase
     {
-        public JumpIndirectInstruction() : base(0x6C, "JMP") { }
+        public JumpIndirectInstruction() : base(0x6C, "JMP", 5) { }
 
         private new class Microcode : IndirectInstructionBase.Microcode
         {

@@ -96,7 +96,7 @@ namespace SixtyFiveOhTwo.Components
             }
         }
 
-        private DebugExecutionResult[] GetExecutionResults(int maxCount)
+        public DebugExecutionResult[] GetExecutionResults(int maxCount)
         {
             var count = Math.Min(maxCount, _writtenResults);
             var results = new DebugExecutionResult[count];

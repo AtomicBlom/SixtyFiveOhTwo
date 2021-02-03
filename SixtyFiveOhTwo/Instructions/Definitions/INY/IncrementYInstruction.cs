@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.INY
 {
 	public sealed class IncrementYInstruction : ImpliedInstructionBase
 	{
-		public IncrementYInstruction() : base(0xC8, "INY")
+		public IncrementYInstruction() : base(0xC8, "INY", 2)
 		{
 		}
 

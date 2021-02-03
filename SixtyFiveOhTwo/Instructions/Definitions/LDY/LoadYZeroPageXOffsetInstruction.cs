@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDY
 {
     public sealed class LoadYZeroPageXOffsetInstruction : ZeroPageXOffsetInstructionBase
     {
-	    public LoadYZeroPageXOffsetInstruction() : base(0xB4, "LDY") { }
+	    public LoadYZeroPageXOffsetInstruction() : base(0xB4, "LDY", 4) { }
 
         private new class Microcode : ZeroPageXOffsetInstructionBase.Microcode
         {

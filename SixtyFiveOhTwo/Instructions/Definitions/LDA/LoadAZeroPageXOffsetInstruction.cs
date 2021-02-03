@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
     public sealed class LoadAZeroPageXOffsetInstruction : ZeroPageXOffsetInstructionBase
     {
-	    public LoadAZeroPageXOffsetInstruction() : base(0xB5, "LDA") { }
+	    public LoadAZeroPageXOffsetInstruction() : base(0xB5, "LDA", 4) { }
 
         private new class Microcode : ZeroPageXOffsetInstructionBase.Microcode
         {

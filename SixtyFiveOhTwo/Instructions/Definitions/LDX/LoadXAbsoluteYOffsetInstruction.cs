@@ -8,7 +8,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
     public sealed class LoadXAbsoluteYOffsetInstruction : AbsoluteWithYOffsetInstructionBase
     {
 
-	    public LoadXAbsoluteYOffsetInstruction() : base(0xBE, "LDX") { }
+	    public LoadXAbsoluteYOffsetInstruction() : base(0xBE, "LDX", 4) { }
 
         private new class Microcode : AbsoluteWithYOffsetInstructionBase.Microcode
         {

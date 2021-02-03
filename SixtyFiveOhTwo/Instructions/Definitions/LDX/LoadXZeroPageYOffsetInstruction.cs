@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
 {
     public sealed class LoadXZeroPageYOffsetInstruction : ZeroPageYOffsetInstructionBase
     {
-	    public LoadXZeroPageYOffsetInstruction() : base(0xB6, "LDX") { }
+	    public LoadXZeroPageYOffsetInstruction() : base(0xB6, "LDX", 4) { }
 
         private new class Microcode : ZeroPageYOffsetInstructionBase.Microcode
         {

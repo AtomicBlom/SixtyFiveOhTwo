@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using SixtyFiveOhTwo.Components;
+﻿using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Emit;
 using SixtyFiveOhTwo.Instructions.Definitions.JMP;
 using SixtyFiveOhTwo.Tests.Util;
@@ -29,11 +28,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 
             Cpu.Run();
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Absolute, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
 
         [Fact]
@@ -49,11 +44,7 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 
             Cpu.Run();
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(1));
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JMP_Indirect, 
-                    TCnt.GracefulExit));
+            AssertProgramStats();
         }
     }
 }

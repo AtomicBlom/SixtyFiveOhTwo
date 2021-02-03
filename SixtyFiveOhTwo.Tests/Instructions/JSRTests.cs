@@ -29,13 +29,10 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 
             Cpu.Run();
 
-            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(0x100, 1));
             MemoryBytes[CPU.StackEnd].Should().Be(CPU.ResetVectorAddressLow.HighOrderByte());
             MemoryBytes[CPU.StackEnd.Offset(-1)].Should().Be(CPU.ResetVectorAddressLow.LowOrderByte());
-            Clock.Ticks.Should().Be(
-                Timings.For(
-                    TCnt.JSR_Absolute, 
-                    TCnt.GracefulExit));
+
+            AssertProgramStats();
         }
     }
 }

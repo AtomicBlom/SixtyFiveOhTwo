@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.JSR
 {
     public sealed class JumpToSubroutineInstruction : AbsoluteInstructionBase
     {
-        public JumpToSubroutineInstruction() : base(0x20, "JSR") { }
+        public JumpToSubroutineInstruction() : base(0x20, "JSR", 6) { }
 
         private new class Microcode : AbsoluteInstructionBase.Microcode
         {

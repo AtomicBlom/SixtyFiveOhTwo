@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDY
 {
     public sealed class LoadYImmediateInstruction : ImmediateInstructionBase
     {
-	    public LoadYImmediateInstruction(): base(0xA0, "LDY") { }
+	    public LoadYImmediateInstruction(): base(0xA0, "LDY", 2) { }
 
         private new class Microcode : ImmediateInstructionBase.Microcode
         {

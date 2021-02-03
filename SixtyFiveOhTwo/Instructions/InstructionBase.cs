@@ -5,14 +5,18 @@ namespace SixtyFiveOhTwo.Instructions
 {
     public abstract class InstructionBase
     {
-        public InstructionBase(byte opCode, string mnemonic)
+        public InstructionBase(byte opCode, string mnemonic, byte tCnt, byte iLen)
         {
             OpCode = opCode;
             Mnemonic = mnemonic;
+            ILen = iLen;
+            TCnt = tCnt;
         }
 
         public byte OpCode { get; }
         public string Mnemonic { get; }
+        public byte ILen { get; }
+        public byte TCnt { get; }
 
         public abstract Microcode GetExecutableMicrocode(CPU cpu);
 

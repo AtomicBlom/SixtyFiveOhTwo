@@ -9,7 +9,7 @@ namespace SixtyFiveOhTwo.Tests.Util
     {
         private readonly CancellationTokenSource _cpuExecutionCompletedTokenSource;
 
-        public GracefulExitInstruction(CancellationTokenSource cpuExecutionCompletedTokenSource) : base(0xFF, "**TEST END")
+        public GracefulExitInstruction(CancellationTokenSource cpuExecutionCompletedTokenSource) : base(0xFF, "**TEST END", 1)
         {
             _cpuExecutionCompletedTokenSource = cpuExecutionCompletedTokenSource;
         }

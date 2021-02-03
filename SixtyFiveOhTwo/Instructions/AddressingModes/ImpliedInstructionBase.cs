@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.AddressingModes
 {
     public abstract class ImpliedInstructionBase : InstructionBase, INoParameterInstruction
     {
-        protected ImpliedInstructionBase(byte opCode, string mnemonic) : base(opCode, mnemonic) { }
+        protected ImpliedInstructionBase(byte opCode, string mnemonic, byte tCnt) : base(opCode, mnemonic, tCnt, 1) { }
 
         protected new abstract class Microcode : InstructionBase.Microcode
         {

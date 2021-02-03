@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.NOP
 {
     public class NoOperationInstruction : ImpliedInstructionBase
     {
-        public NoOperationInstruction() : base(0xEA, "NOP") { }
+        public NoOperationInstruction() : base(0xEA, "NOP", 2) { }
 
         private new class Microcode : ImpliedInstructionBase.Microcode
         {

@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
     public sealed class LoadAIndirectXOffsetInstruction : IndirectXOffsetInstructionBase
     {
-	    public LoadAIndirectXOffsetInstruction() : base(0xA1, "LDA") { }
+	    public LoadAIndirectXOffsetInstruction() : base(0xA1, "LDA", 6) { }
 
         private new class Microcode : IndirectXOffsetInstructionBase.Microcode
         {

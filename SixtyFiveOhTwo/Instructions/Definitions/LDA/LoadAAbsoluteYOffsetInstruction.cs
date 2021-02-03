@@ -7,7 +7,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
     public sealed class LoadAAbsoluteYOffsetInstruction : AbsoluteWithYOffsetInstructionBase
     {
-	    public LoadAAbsoluteYOffsetInstruction() : base(0xB9, "LDA") { }
+	    public LoadAAbsoluteYOffsetInstruction() : base(0xB9, "LDA", 4) { }
 
         private new class Microcode : AbsoluteWithYOffsetInstructionBase.Microcode
         {

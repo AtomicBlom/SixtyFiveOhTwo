@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.AddressingModes
 {
 	public abstract class ZeroPageYOffsetInstructionBase : InstructionBase, IParameterInstruction<byte>
 	{
-        protected ZeroPageYOffsetInstructionBase(byte opCode, string mnemonic) : base(opCode, mnemonic) { }
+        protected ZeroPageYOffsetInstructionBase(byte opCode, string mnemonic, byte tCnt) : base(opCode, mnemonic, tCnt, 2) { }
 
         protected new abstract class Microcode : InstructionBase.Microcode
         {

@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.AddressingModes
 {
     public abstract class AbsoluteWithXOffsetInstructionBase : InstructionBase, IParameterInstruction<ushort>
     {
-        protected AbsoluteWithXOffsetInstructionBase(byte opCode, string mnemonic) : base(opCode, mnemonic) { }
+        protected AbsoluteWithXOffsetInstructionBase(byte opCode, string mnemonic, byte tCnt) : base(opCode, mnemonic, tCnt, 3) { }
 
         protected new abstract class Microcode : InstructionBase.Microcode
         {

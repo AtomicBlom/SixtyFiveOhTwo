@@ -2,11 +2,11 @@
 {
     public static class ProcessorStatusExtensions
     {
-        public static ProcessorStatus SetNumericFlags(this ProcessorStatus status, byte accumulator)
+        public static ProcessorStatus SetNumericFlags(this ProcessorStatus status, byte register)
         {
             var result = status;
-            result = result.SetFlag(ProcessorStatus.NegativeFlag, (accumulator & 1 << 7) != 0);
-            result = result.SetFlag(ProcessorStatus.ZeroFlag, (accumulator == 0));
+            result = result.SetFlag(ProcessorStatus.NegativeFlag, (register & 1 << 7) != 0);
+            result = result.SetFlag(ProcessorStatus.ZeroFlag, (register == 0));
             return result;
         }
 

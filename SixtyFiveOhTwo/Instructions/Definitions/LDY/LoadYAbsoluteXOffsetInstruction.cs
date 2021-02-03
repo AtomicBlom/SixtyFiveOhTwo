@@ -7,7 +7,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDY
 {
     public sealed class LoadYAbsoluteXOffsetInstruction : AbsoluteWithXOffsetInstructionBase
     {
-	    public LoadYAbsoluteXOffsetInstruction() : base(0xBC, "LDY") { }
+	    public LoadYAbsoluteXOffsetInstruction() : base(0xBC, "LDY", 4) { }
 
         private new class Microcode : AbsoluteWithXOffsetInstructionBase.Microcode
         {

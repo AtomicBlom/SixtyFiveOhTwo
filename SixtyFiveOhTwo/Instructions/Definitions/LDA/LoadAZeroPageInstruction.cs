@@ -6,7 +6,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDA
 {
     public sealed class LoadAZeroPageInstruction : ZeroPageInstructionBase
     {
-        public LoadAZeroPageInstruction() : base(0xA5, "LDA") { }
+        public LoadAZeroPageInstruction() : base(0xA5, "LDA", 3) { }
 
         private new class Microcode : ZeroPageInstructionBase.Microcode
         {

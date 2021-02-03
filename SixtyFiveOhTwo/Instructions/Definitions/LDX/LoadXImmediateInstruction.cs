@@ -5,7 +5,7 @@ namespace SixtyFiveOhTwo.Instructions.Definitions.LDX
 {
     public sealed class LoadXImmediateInstruction : ImmediateInstructionBase
     {
-	    public LoadXImmediateInstruction() : base(0xA2, "LDX") { }
+	    public LoadXImmediateInstruction() : base(0xA2, "LDX", 2) { }
 
         private new class Microcode : ImmediateInstructionBase.Microcode
         {

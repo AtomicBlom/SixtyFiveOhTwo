@@ -1,10 +1,7 @@
 ﻿using FluentAssertions;
-using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Emit;
 using SixtyFiveOhTwo.Instructions.Definitions.INY;
-using SixtyFiveOhTwo.Instructions.Definitions.JSR;
 using SixtyFiveOhTwo.Tests.Util;
-using SixtyFiveOhTwo.Util;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -30,16 +27,9 @@ namespace SixtyFiveOhTwo.Tests.Instructions
 				.Write(MemoryBytes);
 
 			Cpu.Run();
-
-
+			
 			Cpu.State.IndexRegisterY.Should().Be(0x42);
-			State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(2 + 1 + 1));
-			Clock.Ticks.Should().Be(
-				Timings.For(
-					TCnt.JMP_Absolute,
-					TCnt.LDY_Immediate,
-					TCnt.INY,
-					TCnt.GracefulExit));
+            AssertProgramStats();
 		}
 	}
 }
