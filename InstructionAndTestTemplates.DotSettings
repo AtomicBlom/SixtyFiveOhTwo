@@ -1,0 +1,106 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Description/@EntryValue">New 6502 Instruction Test</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Text/@EntryValue">using FluentAssertions;&#xD;
+using SixtyFiveOhTwo.Components;&#xD;
+using SixtyFiveOhTwo.Emit;&#xD;
+using SixtyFiveOhTwo.Instructions.Definitions.JSR;&#xD;
+using SixtyFiveOhTwo.Tests.Util;&#xD;
+using SixtyFiveOhTwo.Util;&#xD;
+using Xunit;&#xD;
+using Xunit.Abstractions;&#xD;
+&#xD;
+namespace SixtyFiveOhTwo.Tests.Instructions&#xD;
+{&#xD;
+    public class $Mnemonic$Tests : InstructionTest&#xD;
+    {&#xD;
+        private const int ScrambleSeed = 0x5F3759DF;&#xD;
+&#xD;
+        public $Mnemonic$Tests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)&#xD;
+        {&#xD;
+        }&#xD;
+&#xD;
+        [Fact]&#xD;
+        public void $Mnemonic$_()&#xD;
+        {&#xD;
+            ProgramBuilder.Start(Cpu.InstructionSet, Logger)&#xD;
+                .ScrambleData(seed: ScrambleSeed)&#xD;
+                .JMP(ProgramStartAddress, true)&#xD;
+                .AddInstruction&lt;$FirstInstruction$&gt;()&#xD;
+                .AddInstruction&lt;GracefulExitInstruction&gt;()&#xD;
+                .Write(MemoryBytes);&#xD;
+&#xD;
+            Cpu.Run();&#xD;
+&#xD;
+            State.ProgramCounter.Should().Be(ProgramStartAddress.Offset(1 + 1));&#xD;
+            Clock.Ticks.Should().Be(&#xD;
+                Timings.For(&#xD;
+                    TCnt.JMP_Absolute,&#xD;
+                    TCnt.$Mnemonic$,&#xD;
+                    TCnt.GracefulExit));&#xD;
+        }&#xD;
+    }&#xD;
+}&#xD;
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/CustomProperties/=FileName/@EntryIndexedValue">MNETests</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/CustomProperties/=Extension/@EntryIndexedValue">cs</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Scope/=E8F0594528C33E45BBFEC6CFE851095D/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Scope/=E8F0594528C33E45BBFEC6CFE851095D/Type/@EntryValue">InCSharpProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Field/=Mnemonic/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Field/=Mnemonic/Expression/@EntryValue">constant("MNE")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Field/=Mnemonic/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Field/=FirstInstruction/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Field/=FirstInstruction/Expression/@EntryValue">completeSmart()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=7666BB80CA5AB7419C52EFB4FFB9E988/Field/=FirstInstruction/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Description/@EntryValue">New 6502 Instruction</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Text/@EntryValue">using SixtyFiveOhTwo.Components;&#xD;
+using SixtyFiveOhTwo.Instructions.AddressingModes;&#xD;
+&#xD;
+namespace $Namespace$&#xD;
+{&#xD;
+    public sealed class $ClassName$ : $BaseClass$&#xD;
+    {&#xD;
+        public $ClassName$() : base(0x$Opcode$, "$Mnemonic$") { }&#xD;
+&#xD;
+        private new class Microcode : $BaseClass$.Microcode$END$&#xD;
+        {&#xD;
+            public Microcode(InstructionBase instruction, CPU processor) : base(instruction, processor) { }&#xD;
+        }&#xD;
+&#xD;
+        public override InstructionBase.Microcode GetExecutableMicrocode(CPU cpu)&#xD;
+        {&#xD;
+            return new Microcode(this, cpu);&#xD;
+        }&#xD;
+    }&#xD;
+}&#xD;
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/CustomProperties/=FileName/@EntryIndexedValue">NewInstruction</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/CustomProperties/=Extension/@EntryIndexedValue">cs</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/CustomProperties/=ValidateFileName/@EntryIndexedValue">True</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Scope/=E8F0594528C33E45BBFEC6CFE851095D/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Scope/=E8F0594528C33E45BBFEC6CFE851095D/Type/@EntryValue">InCSharpProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Namespace/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Namespace/Expression/@EntryValue">fileDefaultNamespace()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Namespace/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Namespace/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=ClassName/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=ClassName/Expression/@EntryValue">getAlphaNumericFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=ClassName/InitialRange/@EntryValue">-1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=ClassName/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=BaseClass/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=BaseClass/Expression/@EntryValue">list("AbsoluteInstructionBase,AbsoluteWithXOffsetInstructionBase,AbsoluteWithYOffsetInstructionBase,ImmediateInstructionBase,ImpliedInstructionBase,IndirectInstructionBase,IndirectXOffsetInstructionBase,IndirectYOffsetInstructionBase,ZeroPageInstructionBase,ZeroPageXOffsetInstructionBase,ZeroPageYOffsetInstructionBase")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=BaseClass/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Opcode/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Opcode/Expression/@EntryValue">constant("00")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Opcode/Order/@EntryValue">3</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Mnemonic/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Mnemonic/Expression/@EntryValue">constant("MNY")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=3EE1DE15B88AB943A825933A244326D3/Field/=Mnemonic/Order/@EntryValue">4</s:Int64></wpf:ResourceDictionary>
