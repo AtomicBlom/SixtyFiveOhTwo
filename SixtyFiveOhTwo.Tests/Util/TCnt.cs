@@ -9,6 +9,8 @@
         GracefulExit = 1,
         PageBoundaryPenalty = 1,
 
+        INY = 2,
+        
         JMP_Absolute = 3,
         JMP_Indirect = 5,
 
