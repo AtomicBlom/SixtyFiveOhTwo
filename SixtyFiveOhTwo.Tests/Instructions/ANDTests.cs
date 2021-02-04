@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using SixtyFiveOhTwo.Components;
 using SixtyFiveOhTwo.Emit;
 using SixtyFiveOhTwo.Instructions.Definitions.AND;
 using SixtyFiveOhTwo.Tests.Util;
@@ -15,20 +16,23 @@ namespace SixtyFiveOhTwo.Tests.Instructions
         {
         }
 
-        [Fact]
-        public void AND_()
+        [Theory]
+        [InlineData(0x42, 0x42, false, false)]
+        public void AND_(byte value, byte expectedResult, bool negativeFlag, bool zeroFlag)
         {
             ProgramBuilder.Start(Cpu.InstructionSet, Logger)
                 .ScrambleData(seed: ScrambleSeed)
                 .JMP(ProgramStartAddress, true)
-                .SetARegister(0xAE)
-                .AddInstruction<AndImmediateInstruction>(0x07)
+                .SetARegister(0xFF)
+                .AddInstruction<AndImmediateInstruction>(value)
                 .AddInstruction<GracefulExitInstruction>()
                 .Write(MemoryBytes);
 
             Cpu.Run();
-
-            State.Accumulator.Should().Be(6);
+            
+            State.Status.HasFlag(ProcessorStatus.ZeroFlag).Should().Be(zeroFlag);
+            State.Status.HasFlag(ProcessorStatus.NegativeFlag).Should().Be(negativeFlag);
+            State.Accumulator.Should().Be(expectedResult);
 
             AssertProgramStats();
         }
